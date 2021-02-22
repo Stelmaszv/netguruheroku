@@ -32,11 +32,14 @@ from django.urls import path,include
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from heroku.netgurutask.views import CarList,CarListPupular,CarDelete
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.API_prototype.as_view(),name='main'),
+    path('cars', CarList.as_view(),name='cars_list'),
+    path('popular', CarListPupular.as_view(),name='cars_popular'),
+    path('cars/<int:id>/',CarDelete.as_view(), name="car_delete")
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
