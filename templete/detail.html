@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <title>FrontEnd</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    </head>
+    <body>
+        <app-root></app-root>
+        {% load static %}
+        <script  src="{% static "runtime.js" %}"    defer></script>
+        <script  src="{% static "polyfills.js" %}"  defer></script>
+        <script  src="{% static "styles.js" %}"     defer></script>
+        <script  src="{% static "vendor.js" %}"     defer></script>
+        <script  src="{% static "main.js" %}"       defer></script>
+         <script>
+          let url= 'ws://127.0.0.1:8000//test'
+          var socket =new WebSocket(url)
+          socket.onmessage=function(e){
+            console.log(e.data)
+            document.getElementById("chat-log").innerHTML=e.data
+          }
+          socket.onpen=function(e){
+            console.log('onpen')
+            console.log('onpoen',e.data)
+          }
+          socket.onerror=function(e){
+            console.log('onerror')
+            console.log(e)
+          }
+          socket.onclose=function(e){
+            console.log('onclose')
+            console.log(e)
+          }
+        </script>
+    </body>
+</html>
