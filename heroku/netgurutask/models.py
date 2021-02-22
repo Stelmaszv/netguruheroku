@@ -6,3 +6,6 @@ class Car(models.Model):
     model = models.CharField(max_length=100)
     rates_number = models.IntegerField(null=True)
     avg_rating   = models.IntegerField(null=True)
+
+    def __str__(self):
+        return self.name

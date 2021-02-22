@@ -73,7 +73,21 @@ class CarListPupular (API_prototype):
     def set_query_set(self, request):
         self.queryset = Car.objects.order_by('-rates_number')
 
+class CarDelete(API_prototype_get):
+    many=False
+    serializer_class = CarDeleteSerializer
 
+    def get_object(self, pk):
+        try:
+            return Car.objects.get(pk=pk)
+        except Car.DoesNotExist:
+            raise Http404
+
+    def delete(self, request, *args, **kwargs):
+        car = self.get_object(self.kwargs.get("id"))
+        car.delete()
+        mess =str(car)+' Has been removed from data base'
+        return Response(data=mess, status=status.HTTP_200_OK)
 
 
 
