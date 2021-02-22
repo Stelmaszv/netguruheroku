@@ -7,5 +7,4 @@ def index(request):
     return render(request, 'detail.html');
 
 class API_prototype(generics.ListCreateAPIView):
-    queryset=User.objects.all()
-    serializer_class = user_serializer
+    queryset=[]
