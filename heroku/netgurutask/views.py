@@ -9,89 +9,75 @@ from rest_framework.views import  APIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.views.generic.edit import DeleteView
 import json
-# Create your views here.
 
-class API_prototype_get(APIView):
-
-    queryset=[]
+class APIPrototypeGet(APIView):
 
     def get(self, request, *args, **kwargs):
-        self.set_query_set(request)
-        return self.API_get(request)
+        return self.api_get(request)
 
-    def API_get(self, request, *args, **kwargs):
+    def api_get(self, request, *args, **kwargs):
+
         serializer = self.serializer_class(self.queryset)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-    def set_query_set(self,request):
-        pass
+class APIPrototype(APIView):
 
-class API_prototype(APIView):
-
-    many=True
-
-    def set_query_set(self,request):
-        pass
+    many     = True
+    order_by = ''
 
     def post(self, request, *args, **kwargs):
-        self.set_query_set(request)
+
         serializer = self.serializer_class(data=request.data,many=False)
         if serializer.is_valid():
             serializer.save()
-            return self.return_respanse(request)
-        return self.return_respanse(request)
+            return self.api_get(request)
+        return self.api_get(request)
 
-    def _API_get(self, request, *args, **kwargs):
+    def api_get(self, request, *args, **kwargs):
+
         self.auth=False
         serializer = self.serializer_class(self.queryset, many=self.many)
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
+        if len(self.order_by):
+            list = sorted(serializer.data, key=lambda tup: tup[self.order_by],reverse=True)
+        else:
+            list= serializer.data
+        return Response(data=list, status=status.HTTP_200_OK)
 
     def get(self, request, *args, **kwargs):
-        self.permission_classes = []
-        self.set_query_set(request)
-        return self.return_respanse(request)
 
-    def return_respanse(self,request):
-        return self._API_get(request)
+        return self.api_get(request)
 
-    def _return_pages_json(self,request):
-        pages={
-            'valid':self._validPages(self.num_pages,int(self.page)),
-            'max': self.num_pages,
-            'page':int(self.page)
-        }
-        return Response(data=pages, status=status.HTTP_200_OK)
+class CarList (APIPrototype):
 
-class CarList (API_prototype):
-    serializer_class = CarSerializer
+    serializer_class  = CarSerializer
+    queryset          = Car.objects
+    order_by          = 'avg_rating'
 
-    def set_query_set(self, request):
-        self.queryset = Car.objects.order_by('-avg_rating')
+class CarListPupular (APIPrototype):
 
-class CarListPupular (API_prototype):
     serializer_class = CarSerializerPopular
+    queryset         = Car.objects
+    order_by         = 'rates_number'
 
-    def set_query_set(self, request):
-        self.queryset = Car.objects.order_by('-rates_number')
+class AddRate(APIPrototype):
 
-class AddRate(API_prototype):
     serializer_class = RateSerializer
+    queryset=  Rate.objects
 
-    def set_query_set(self, request):
-        self.queryset = Rate.objects.all()
+class CarDelete(APIPrototypeGet):
 
-
-class CarDelete(API_prototype_get):
-    many=False
+    many             = False
     serializer_class = CarDeleteSerializer
 
     def get_object(self, pk):
+
         try:
             return Car.objects.get(pk=pk)
         except Car.DoesNotExist:
             raise Http404
 
     def delete(self, request, *args, **kwargs):
+
         car = self.get_object(self.kwargs.get("id"))
         car.delete()
         mess =str(car)+' Has been removed from data base'

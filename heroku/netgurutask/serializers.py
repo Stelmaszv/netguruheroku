@@ -8,13 +8,13 @@ class CarDeleteSerializer(serializers.ModelSerializer):
 class CarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Car
-        fields = ['id', 'name','model','avg_rating']
+        fields = ['id', 'make','model','avg_rating']
 
 class CarSerializerPopular(serializers.ModelSerializer):
 
     class Meta:
         model = Car
-        fields = ['id', 'name','model','rates_number']
+        fields = ['id', 'make','model','rates_number']
 
 class RateSerializer(serializers.ModelSerializer):
 
