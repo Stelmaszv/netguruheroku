@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Car
+from .models import Car,Rate
 from heroku.serializers import user_serializer
 from .serializers import CarSerializer,CarSerializerPopular,CarDeleteSerializer
 from rest_framework.views import  APIView
