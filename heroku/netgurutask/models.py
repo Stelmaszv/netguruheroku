@@ -61,7 +61,7 @@ class Car(models.Model):
 
     def get_JSON(self):
 
-        with open('getallmakes.json') as f:
+        with open('data.json') as f:
             data = json.load(f)
         return data['Results']
 
