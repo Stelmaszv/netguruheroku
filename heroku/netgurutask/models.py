@@ -7,6 +7,13 @@ class Rate(models.Model):
     rating   = models.IntegerField(null=True)
     car_id   = models.ForeignKey(to='netgurutask.Car', on_delete=models.CASCADE, related_name='car',null=True)
 
+    def save(self, *args, **kwargs):
+        if self.rating > 0 and self.rating<6:
+            super(Rate, self).save(*args, **kwargs)
+            self.car_id.rates.add(self)
+        else:
+            raise ValueError("Your rate is "+str(self.rating)+"!  Add a rate for a car from 1 to 5 !" )
+
 class Car(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100)
@@ -33,7 +40,7 @@ class Car(models.Model):
         if self.id is not None:
             rote=0
             for item in self.rates.all():
-                rote=rote+item.rate
+                rote=rote+item.rating
             if self.rates.count()>0:
                 self.avg_rating=rote/self.rates.count()
             else:
