@@ -4,10 +4,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Car,Rate
 from heroku.serializers import user_serializer
-from .serializers import CarSerializer,CarSerializerPopular,CarDeleteSerializer
+from .serializers import CarSerializer,CarSerializerPopular,CarDeleteSerializer,RateSerializer
 from rest_framework.views import  APIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from django.views.generic.edit import DeleteView
+import json
 # Create your views here.
 
 class API_prototype_get(APIView):
@@ -72,6 +73,13 @@ class CarListPupular (API_prototype):
 
     def set_query_set(self, request):
         self.queryset = Car.objects.order_by('-rates_number')
+
+class AddRate(API_prototype):
+    serializer_class = RateSerializer
+
+    def set_query_set(self, request):
+        self.queryset = Rate.objects.all()
+
 
 class CarDelete(API_prototype_get):
     many=False

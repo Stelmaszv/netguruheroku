@@ -32,12 +32,13 @@ from django.urls import path,include
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
-from heroku.netgurutask.views import CarList,CarListPupular,CarDelete
+from heroku.netgurutask.views import CarList,CarListPupular,CarDelete,AddRate
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('cars', CarList.as_view(),name='cars_list'),
+    path('rate', AddRate.as_view(),name='add_rate'),
     path('popular', CarListPupular.as_view(),name='cars_popular'),
     path('cars/<int:id>/',CarDelete.as_view(), name="car_delete")
 ]

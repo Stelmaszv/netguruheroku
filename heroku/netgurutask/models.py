@@ -4,8 +4,8 @@ import json
 # Create your models here.
 class Rate(models.Model):
     id = models.AutoField(primary_key=True)
-    rate   = models.IntegerField(null=True)
-    car   = models.ForeignKey(to='netgurutask.Car', on_delete=models.CASCADE, related_name='car',null=True)
+    rating   = models.IntegerField(null=True)
+    car_id   = models.ForeignKey(to='netgurutask.Car', on_delete=models.CASCADE, related_name='car',null=True)
 
 class Car(models.Model):
     id = models.AutoField(primary_key=True)
