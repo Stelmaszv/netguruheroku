@@ -6,18 +6,11 @@ from rest_framework import status
 from .models import Car,Rate
 import json
 from django.test import Client
-# Create your tests here.
 from .views import CarList,AddRate,CarListPupular,CarDelete
+from .serializers import CarSerializer
 
 class abstrat_Test(APITestCase):
     many=True
-
-    def json_match(self):
-        serializer_data = self.Serializer(instance=self.instance.objects.all(), many=self.many).data
-        response = self.client.get(self.url_test)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response_data = json.loads(response.content)
-        self.assertEqual(serializer_data, response_data)
 
     def data_match(self):
         response = self.client.get(self.url_test)
@@ -51,15 +44,14 @@ class CarList_test(abstrat_Test):
     def test_data_match_and_view_match(self):
         self.data_match()
         self.view_match(CarList)
-
-
     def test_add_car(self):
-        data = Car.objects.create(make="BUICK", model="BUICK")
         data_post= {
             "make": "BUICK",
             "model": "nice"
         }
+        self.assertEqual(Car.objects.count(), 0)
         response = self.client.post(self.url_test, data_post)
+        self.assertEqual(Car.objects.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 class CarPopular_test(abstrat_Test):
