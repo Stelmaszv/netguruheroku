@@ -43,8 +43,7 @@ class APIPrototype(APIView):
 
     def api_get(self, request, *args, **kwargs):
 
-        list=self.list()
-        return Response(data=list, status=status.HTTP_200_OK)
+        return Response(data=self.list(), status=status.HTTP_200_OK)
 
     def get(self, request, *args, **kwargs):
 

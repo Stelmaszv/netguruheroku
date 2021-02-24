@@ -7,7 +7,7 @@ from .models import Car,Rate
 import json
 from django.test import Client
 # Create your tests here.
-from .views import CarList,AddRate
+from .views import CarList,AddRate,CarListPupular
 
 class abstrat_Test(APITestCase):
     many=True
@@ -44,6 +44,14 @@ class CarList_test(abstrat_Test):
         }
         response = self.client.post(self.url_test, data_post)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+class CarPopular_test(abstrat_Test):
+
+    url_test = reverse("cars_popular", kwargs={})
+
+    def test_data_match_and_view_match(self):
+        self.data_match()
+        self.view_match(CarListPupular)
 
 class Rate_test(abstrat_Test):
     url_test = reverse("add_rate", kwargs={})
