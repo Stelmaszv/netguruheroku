@@ -7,7 +7,7 @@ from .models import Car,Rate
 import json
 from django.test import Client
 # Create your tests here.
-from .views import CarList,AddRate,CarListPupular
+from .views import CarList,AddRate,CarListPupular,CarDelete
 
 class abstrat_Test(APITestCase):
     many=True
@@ -26,8 +26,24 @@ class abstrat_Test(APITestCase):
     def view_match(self,view):
         self.assertEquals(resolve(self.url_test).func.view_class, view)
 
+class CarDelete_test(abstrat_Test):
+    url_test = reverse("car_delete", kwargs={"id": 1})
+
+    def setUp(self):
+        self.client = Client()
+        data = Car.objects.create(make="BUICK", model="BUICK")
+
+    def test_data_match_and_view_match(self):
+        self.data_match()
+        self.view_match(CarDelete)
+    def test_delete_car(self):
+        self.assertEqual(Car.objects.count(), 1)
+        response = self.client.delete(self.url_test)
+        self.assertEqual(Car.objects.count(),0)
+
 class CarList_test(abstrat_Test):
     url_test = reverse("cars_list", kwargs={})
+    url_test_delete = reverse("car_delete", kwargs={"id":0})
 
     def setUp(self):
         self.client = Client()
@@ -35,6 +51,7 @@ class CarList_test(abstrat_Test):
     def test_data_match_and_view_match(self):
         self.data_match()
         self.view_match(CarList)
+
 
     def test_add_car(self):
         data = Car.objects.create(make="BUICK", model="BUICK")
