@@ -3,11 +3,11 @@ from rest_framework.test import APITestCase
 from django.urls import resolve
 from django.urls import reverse
 from rest_framework import status
-from .models import Car
+from .models import Car,Rate
 import json
 from django.test import Client
 # Create your tests here.
-from .views import CarList
+from .views import CarList,AddRate
 
 class abstrat_Test(APITestCase):
     many=True
@@ -32,11 +32,9 @@ class CarList_test(abstrat_Test):
     def setUp(self):
         self.client = Client()
 
-    def test_view_match(self):
-        self.view_match(CarList)
-
-    def test_data_match(self):
+    def test_data_match_and_view_match(self):
         self.data_match()
+        self.view_match(CarList)
 
     def test_add_car(self):
         data = Car.objects.create(make="BUICK", model="BUICK")
@@ -45,5 +43,26 @@ class CarList_test(abstrat_Test):
             "model": "nice"
         }
         response = self.client.post(self.url_test, data_post)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+class Rate_test(abstrat_Test):
+    url_test = reverse("add_rate", kwargs={})
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_data_match_and_view_match(self):
+        self.data_match()
+        self.view_match(AddRate)
+
+    def test_add_car(self):
+        car = Car.objects.create(make="BUICK", model="BUICK")
+        data = Rate.objects.create(rating=5, car_id=car)
+        data_post= {
+            "car_id": 1,
+            "rating": 5
+        }
+        response = self.client.post(self.url_test, data_post)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
 
